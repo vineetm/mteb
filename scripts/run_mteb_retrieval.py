@@ -87,6 +87,15 @@ TASK_LIST_RETRIEVAL = [
     "TRECCOVID",
 ]
 
+TASK_LIST_RETRIEVAL_SELECTED = [
+    "ArguAna",
+    "FEVER",
+    "HotpotQA",
+    "NQ",
+    "SciFact",
+    "TRECCOVID"
+]
+
 TASK_LIST_STS = [
     "BIOSSES",
     "SICK-R",
@@ -102,7 +111,7 @@ TASK_LIST_STS = [
 ]
 
 TASK_LIST = (
-    TASK_LIST_RETRIEVAL
+    TASK_LIST_RETRIEVAL_SELECTED
 )
 
 args = setup_args()

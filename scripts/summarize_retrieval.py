@@ -33,12 +33,14 @@ def main():
   
   cols = []
   cols.append(f'Avg {args.metric}')
-  for key in scores_dict:
+
+  sorted_keys = sorted(scores_dict.keys())
+  for key in sorted_keys:
     cols.append(key)
   
   row = [
     scores_dict[key]
-    for key in scores_dict
+    for key in sorted_keys
   ]
   row.insert(0, f'{np.mean(row):.4f}')
   df = pd.DataFrame([row], columns=cols)
