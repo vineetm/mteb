@@ -88,12 +88,16 @@ TASK_LIST_RETRIEVAL = [
 ]
 
 TASK_LIST_RETRIEVAL_SELECTED = [
-    "ArguAna",
-    "FEVER",
-    "HotpotQA",
-    "NQ",
+    "NFCorpus",
     "SciFact",
-    "TRECCOVID"
+    "ArguAna",
+    "SCIDOCS",
+    "FiQA2018",
+    "TRECCOVID",
+    "Touche2020",
+    "NQ",
+    "DBPedia",  
+    "HotpotQA"
 ]
 
 TASK_LIST_STS = [
