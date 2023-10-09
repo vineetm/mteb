@@ -10,7 +10,6 @@ def setup_args():
     parser.add_argument('--model_name')
     parser.add_argument('--model_path')
     parser.add_argument('--output_dir')
-    parser.add_argument('--large', default=False, action='store_true')
     return parser.parse_args()
 
 
