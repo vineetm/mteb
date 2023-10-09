@@ -9,6 +9,8 @@ def setup_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name')
     parser.add_argument('--model_path')
+    parser.add_argument('--output_dir')
+    parser.add_argument('--large', default=False, action='store_true')
     return parser.parse_args()
 
 
@@ -98,7 +100,10 @@ TASK_LIST_RETRIEVAL_SELECTED = [
     "NQ",
     "DBPedia",  
     "HotpotQA"
+    "FEVER",
+    "ClimateFEVER"
 ]
+
 
 TASK_LIST_STS = [
     "BIOSSES",
@@ -120,6 +125,7 @@ TASK_LIST = (
 
 args = setup_args()
 logging.info(f'{args}')
+
 model_name = args.model_name
 model = SentenceTransformer(args.model_path)
 
@@ -127,4 +133,4 @@ for task in TASK_LIST:
     logger.info(f"Running task: {task}")
     eval_splits = ["dev"] if task == "MSMARCO" else ["test"]
     evaluation = MTEB(tasks=[task], task_langs=["en"])  # Remove "en" for running all languages
-    evaluation.run(model, output_folder=f"results/{model_name}", eval_splits=eval_splits)
+    evaluation.run(model, output_folder=f"{args.output_dir}/{model_name}", eval_splits=eval_splits)

@@ -13,37 +13,52 @@ def setup_args():
   parser.add_argument('--metric', default='ndcg_at_10')
   return parser.parse_args()
 
+MODEL_KEYS = [
+  'TRECCOVID',	'NFCorpus',	'NQ',	'HotpotQA',	'FiQA2018',	'ArguAna',	
+  'Touche2020',	'DBPedia',	'SCIDOCS', 'ClimateFEVER', 'FEVER', 'SciFact'
+]
+
+COLUMNS = ['Model', 'Avg NDCG@10']
+COLUMNS.extend(MODEL_KEYS)
+
 def main():
   args = setup_args()
   logging.info(f'args: {args}')
 
   results_dir = Path(args.dir_name)
 
-  scores_dict = {}
+  rows = []
+  for sub_dir in results_dir.glob('*'):
+    if not sub_dir.is_dir():
+      continue
 
-  for json_path in results_dir.glob('*.json'):
-    key = json_path.stem
-    with open(json_path) as f:
-      data = json.load(f)
-      if 'test' in data:
-        json_data = data['test']
+    scores_dict = {}
+    model_key = sub_dir.stem
+    logging.info(f'Processing {sub_dir} {model_key}')
+
+    for json_path in sub_dir.glob('*.json'):
+      test_key = json_path.stem
+      with open(json_path) as f:
+        data = json.load(f)
+        if 'test' in data:
+          json_data = data['test']
+        else:
+          json_data = data['dev']
+        scores_dict[test_key] = json_data[args.metric]
+
+    row = []
+    for key in MODEL_KEYS:
+      if key in scores_dict:
+        row.append(scores_dict[key])
       else:
-        json_data = data['dev']
-      scores_dict[key] = json_data[args.metric]
-  
-  cols = []
-  cols.append(f'Avg {args.metric}')
-
-  sorted_keys = sorted(scores_dict.keys())
-  for key in sorted_keys:
-    cols.append(key)
-  
-  row = [
-    scores_dict[key]
-    for key in sorted_keys
-  ]
-  row.insert(0, f'{np.mean(row):.4f}')
-  df = pd.DataFrame([row], columns=cols)
+        row.append(0.)
+    
+    avg_score = np.mean(row)
+    row.insert(0, model_key)
+    row.insert(1, f'{avg_score:.4f}')
+    rows.append(row)
+    
+  df = pd.DataFrame(rows, columns=COLUMNS)
   df.to_csv(results_dir / 'summary.csv', index=False)
 
 if __name__ == '__main__':
